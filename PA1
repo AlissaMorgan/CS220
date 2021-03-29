@@ -1,0 +1,115 @@
+import itertools
+import sys
+
+
+# p implies q
+def implies(p, q):
+    if not p:
+        return True
+    if p:
+        if q:
+            return True
+        if not q:
+            return False
+
+
+
+# not p implies not q
+def npIMPnq(p, q):
+    if p:
+        return True
+    if not p:
+        if not q:
+            return True
+        if q:
+            return False
+
+
+# not q implies not p
+def nqIMPnp(p, q):
+    if q:
+        return True
+    if not q:
+        if not p:
+            return True
+        if p:
+            return False
+
+
+# p if and only if q: (p implies q) and (q implies p)
+def iff(p, q):
+    if implies(p,q) and implies(q, p):
+        return True
+    return False
+
+
+# not ( p and q )
+def nand(p, q):
+    if not (p and q):
+        return True
+    return False
+
+
+# not p and not q
+def npANDnq(p, q):
+    if (not p) and (not q):
+        return True
+    return False
+
+
+# not ( p or q)
+def nor(p, q):
+    if not (p or q):
+        return True
+    return False
+
+
+
+# not p or not q
+def npORnq(p, q):
+    return (not p) or (not q)
+
+def make_tt_ins(n):
+    if n == 1:
+        return [[False], [True]]
+    truths = []
+    for i in make_tt_ins(n - 1):
+        truths.append(i + [False])
+        truths.append(i + [True])
+    return truths
+
+
+
+# provided
+def run(f):
+    print("  True,True  : ", f(True, True))
+    print("  True,False : ", f(True, False))
+    print("  False,True : ", f(False, True))
+    print("  False,False: ", f(False, False))
+    print()
+
+
+# provided
+if __name__ == "__main__":
+    print("program", sys.argv[0])
+    f1 = sys.argv[1]
+    print(f1);
+    if (f1 == "implies"):
+        run(implies);
+    if (f1 == "iff"):
+        run(iff)
+    if (f1 == "npIMPnq"):
+        run(npIMPnq)
+    if (f1 == "nqIMPnp"):
+        run(nqIMPnp)
+    if (f1 == "nand"):
+        run(nand)
+    if (f1 == "nor"):
+        run(nor)
+    if (f1 == "npANDnq"):
+        run(npANDnq)
+    if (f1 == "npORnq"):
+        run(npORnq)
+    if (f1 == "tt"):
+        print(make_tt_ins(int (sys.argv[2])))
+
