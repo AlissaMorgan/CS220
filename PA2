@@ -1,111 +1,115 @@
-'''
-          PA2: Truth tables and equivalence
-          -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
-
-For PA2 you will be provided with a function callf2(f,p,q)
-which will cal f(p,q), and with a main to test your code.
-You will implement two functions: eval_tt_f2(f) and
-equivalent(tt1,tt2). Read main to understand how the
-command line for PA2.py.
-
-The function eval_tt_f2(f) will, given a two argument Boolean
-function f ( one of the functions you created in PA1.py), return
-the truth table for f. Use your make_tt_ins(n) function from
-PA1.py to create an arrayList with n inputs, then use callf2
-to append the truth value for f to each row of that arrayList.
-For example, eval_tt_f2(iff) will return:
-
-[[False, False, True], [False, True, False], [True, False, False], [True, True, True]]
-
-The function equivalent(tt1,tt2) will return True if tt1 and tt2
-are equivalent and False otherwise. For example,
-  equivalent(eval_tt_f2(PA1.implies), eval_tt_f2(PA1.nqIMPnp))
-will return True.
-
-'''
-
+import itertools
 import sys
-import PA1
+
+
+# p implies q
+def implies(p, q):
+    if not p:
+        return True
+    if p:
+        if q:
+            return True
+        if not q:
+            return False
+
+
+
+# not p implies not q
+def npIMPnq(p, q):
+    if p:
+        return True
+    if not p:
+        if not q:
+            return True
+        if q:
+            return False
+
+
+# not q implies not p
+def nqIMPnp(p, q):
+    if q:
+        return True
+    if not q:
+        if not p:
+            return True
+        if p:
+            return False
+
+
+# p if and only if q: (p implies q) and (q implies p)
+def iff(p, q):
+    if implies(p,q) and implies(q, p):
+        return True
+    return False
+
+
+# not ( p and q )
+def nand(p, q):
+    if not (p and q):
+        return True
+    return False
+
+
+# not p and not q
+def npANDnq(p, q):
+    if (not p) and (not q):
+        return True
+    return False
+
+
+# not ( p or q)
+def nor(p, q):
+    if not (p or q):
+        return True
+    return False
+
+
+
+# not p or not q
+def npORnq(p, q):
+    return (not p) or (not q)
+
+def make_tt_ins(n):
+    if n == 1:
+        return [[False], [True]]
+    truths = []
+    for i in make_tt_ins(n - 1):
+        truths.append(i + [False])
+        truths.append(i + [True])
+    return truths
+
+
 
 # provided
-def callf2(f, p, q):
-    return f(p, q)
-
-'''
-The function eval_tt_f2(f) will, given a two argument Boolean 
-function f ( one of the functions you created in PA1.py), return 
-the truth table for f. Use your make_tt_ins(n) function from 
-PA1.py to create an arrayList with n inputs, then use callf2 
-to append the truth value for f to each row of that arrayList. 
-For example, eval_tt_f2(iff) will return:
-
-[[False, False, True], [False, True, False], [True, False, False], [True, True, True]]
-'''
-# implement this
-def eval_tt_f2(f):
-    truths = PA1.make_tt_ins(2)
-    retData = []
-    val = 0
-    next = True
-    for i in truths:
-        for row in i:
-            if (val % 2 != 0):
-                retData.append(i + [callf2(f, next, row)])
-                val = val+1
-            else:
-                next = row
-                val = val + 1
-    return retData
-
-'''
-The function equivalent(tt1,tt2) will return True if tt1 and tt2
-are equivalent and False otherwise. For example,
-  equivalent(eval_tt_f2(PA1.implies), eval_tt_f2(PA1.nqIMPnp))
-will return True.
-'''
-# implement this
-def equivalent(tt1, tt2):
-    val = True
-    for i in range(len(tt1)):
-        if(tt1[i] != tt2[i]):
-            val = False
-    return val
+def run(f):
+    print("  True,True  : ", f(True, True))
+    print("  True,False : ", f(True, False))
+    print("  False,True : ", f(False, True))
+    print("  False,False: ", f(False, False))
+    print()
 
 
 # provided
 if __name__ == "__main__":
     print("program", sys.argv[0])
     f1 = sys.argv[1]
-    argc = len(sys.argv)
-    print(f1)
-    tt1 = []
-    if (f1 == "implies"): tt1 = eval_tt_f2(PA1.implies)
-    if (f1 == "iff"): tt1 = eval_tt_f2(PA1.iff)
-    if (f1 == "npIMPnq"): tt1 = eval_tt_f2(PA1.npIMPnq)
-    if (f1 == "nqIMPnp"): tt1 = eval_tt_f2(PA1.nqIMPnp)
-    if (f1 == "nand"): tt1 = eval_tt_f2(PA1.nand)
-    if (f1 == "nor"): tt1 = eval_tt_f2(PA1.nor)
-    if (f1 == "npANDnq"): tt1 = eval_tt_f2(PA1.npANDnq)
-    if (f1 == "npORnq"): tt1 = eval_tt_f2(PA1.npORnq)
-    print(tt1)
+    print(f1);
+    if (f1 == "implies"):
+        run(implies);
+    if (f1 == "iff"):
+        run(iff)
+    if (f1 == "npIMPnq"):
+        run(npIMPnq)
+    if (f1 == "nqIMPnp"):
+        run(nqIMPnp)
+    if (f1 == "nand"):
+        run(nand)
+    if (f1 == "nor"):
+        run(nor)
+    if (f1 == "npANDnq"):
+        run(npANDnq)
+    if (f1 == "npORnq"):
+        run(npORnq)
+    if (f1 == "tt"):
+        print(make_tt_ins(int (sys.argv[2])))
 
-    if (argc > 2):
-        f2 = sys.argv[2]
-        print(f2)
-        tt2 = []
-        if (f2 == "implies"): tt2 = eval_tt_f2(PA1.implies)
-        if (f2 == "iff"): tt2 = eval_tt_f2(PA1.iff)
-        if (f2 == "npIMPnq"): tt2 = eval_tt_f2(PA1.npIMPnq)
-        if (f2 == "nqIMPnp"): tt2 = eval_tt_f2(PA1.nqIMPnp)
-        if (f2 == "nand"): tt2 = eval_tt_f2(PA1.nand)
-        if (f2 == "nor"): tt2 = eval_tt_f2(PA1.nor)
-        if (f2 == "npANDnq"): tt2 = eval_tt_f2(PA1.npANDnq)
-        if (f2 == "npORnq"): tt2 = eval_tt_f2(PA1.npORnq)
-        print(tt2)
-        if equivalent(tt1, tt2):
-            print("equivalent!")
-        else:
-            print("NOT equivalent!")
-    print()
-
-#  print(equivalent(eval_tt_f2(PA1.implies), eval_tt_f2(PA1.nqIMPnp)))
